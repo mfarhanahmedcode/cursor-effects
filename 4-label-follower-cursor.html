@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Label follower cursor</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d10;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  a, button {
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #eee;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: none;
+  }
+
+  #label-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #fff;
+    color: #000;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<button data-hover data-label="Open">Hover me</button>
+
+<div id="label-cursor">View</div>
+
+<script>
+  const label = document.getElementById('label-cursor');
+  let hovering = false;
+
+  document.addEventListener('mousemove', (e) => {
+    label.style.left = e.clientX + 'px';
+    label.style.top = e.clientY + 'px';
+  });
+
+  document.querySelectorAll('[data-hover]').forEach((el) => {
+    el.addEventListener('mouseenter', () => {
+      hovering = true;
+      label.textContent = el.dataset.label || 'Open';
+      label.style.transform = 'translate(-50%, -50%) scale(1)';
+    });
+    el.addEventListener('mouseleave', () => {
+      hovering = false;
+      label.textContent = 'View';
+      label.style.transform = 'translate(-50%, -50%) scale(0.8)';
+    });
+  });
+</script>
+
+</body>
+</html>

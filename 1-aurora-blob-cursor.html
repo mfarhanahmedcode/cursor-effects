@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aurora blob cursor</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d10;
+    cursor: none;
+  }
+
+  #aurora {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    background: conic-gradient(from 0deg, #7F77DD, #D4537E, #1D9E75, #7F77DD);
+    filter: blur(40px);
+    opacity: 0.55;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<div id="aurora"></div>
+
+<script>
+  const aurora = document.getElementById('aurora');
+
+  document.addEventListener('mousemove', (e) => {
+    aurora.style.left = e.clientX + 'px';
+    aurora.style.top = e.clientY + 'px';
+  });
+
+  document.addEventListener('mouseleave', () => aurora.style.opacity = 0);
+  document.addEventListener('mouseenter', () => aurora.style.opacity = 0.55);
+</script>
+
+</body>
+</html>

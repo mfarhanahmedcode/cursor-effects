@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Magnetic snap cursor</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d10;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  a, button {
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #eee;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: none;
+  }
+
+  #magnet-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #E0B04A;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, 
+              background 0.2s ease, border 0.2s ease;
+  }
+</style>
+</head>
+<body>
+
+<button data-hover>Hover me</button>
+
+<div id="magnet-dot"></div>
+
+<script>
+  const dot = document.getElementById('magnet-dot');
+  const targets = document.querySelectorAll('[data-hover]');
+  const PULL_RADIUS = 90;
+  const PULL_STRENGTH = 0.3;
+
+  let mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+  let pos = { x: mouse.x, y: mouse.y };
+  let hovering = false;
+
+  document.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function animate() {
+    let targetX = mouse.x;
+    let targetY = mouse.y;
+    hovering = false;
+
+    targets.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dist = Math.hypot(mouse.x - cx, mouse.y - cy);
+
+      if (dist < PULL_RADIUS) {
+        targetX = cx + (mouse.x - cx) * PULL_STRENGTH;
+        targetY = cy + (mouse.y - cy) * PULL_STRENGTH;
+        hovering = true;
+      }
+    });
+
+    pos.x += (targetX - pos.x) * 0.25;
+    pos.y += (targetY - pos.y) * 0.25;
+    dot.style.left = pos.x + 'px';
+    dot.style.top = pos.y + 'px';
+
+    if (hovering) {
+      dot.style.width = '28px';
+      dot.style.height = '28px';
+      dot.style.background = 'transparent';
+      dot.style.border = '2px solid #E0B04A';
+    } else {
+      dot.style.width = '14px';
+      dot.style.height = '14px';
+      dot.style.background = '#E0B04A';
+      dot.style.border = 'none';
+    }
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gooey elastic blob cursor</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d10;
+    cursor: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  a, button {
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: 1px solid #444;
+    background: transparent;
+    color: #eee;
+    font-family: sans-serif;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: none;
+  }
+
+  /* SVG filter merges the two blobs into one gooey shape */
+  #goo-filter-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+
+  #goo-wrap {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    filter: url(#goo);
+  }
+
+  .blob {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: #7F77DD;
+    transform: translate(-50%, -50%);
+  }
+
+  #blob-lead {
+    width: 22px;
+    height: 22px;
+  }
+
+  #blob-follow {
+    width: 22px;
+    height: 22px;
+  }
+</style>
+</head>
+<body>
+
+<button data-hover>Hover me</button>
+
+<svg id="goo-filter-svg">
+  <filter id="goo">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+    <feColorMatrix in="blur" mode="matrix"
+      values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
+      result="goo" />
+  </filter>
+</svg>
+
+<div id="goo-wrap">
+  <div class="blob" id="blob-lead"></div>
+  <div class="blob" id="blob-follow"></div>
+</div>
+
+<script>
+  const lead = document.getElementById('blob-lead');
+  const follow = document.getElementById('blob-follow');
+
+  let mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+  let followPos = { x: mouse.x, y: mouse.y };
+  let hovering = false;
+
+  document.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    lead.style.left = mouse.x + 'px';
+    lead.style.top = mouse.y + 'px';
+  });
+
+  document.querySelectorAll('[data-hover]').forEach((el) => {
+    el.addEventListener('mouseenter', () => hovering = true);
+    el.addEventListener('mouseleave', () => hovering = false);
+  });
+
+  function animate() {
+    followPos.x += (mouse.x - followPos.x) * 0.12;
+    followPos.y += (mouse.y - followPos.y) * 0.12;
+    follow.style.left = followPos.x + 'px';
+    follow.style.top = followPos.y + 'px';
+
+    const size = hovering ? 34 : 22;
+    lead.style.width = size + 'px';
+    lead.style.height = size + 'px';
+    follow.style.width = size + 'px';
+    follow.style.height = size + 'px';
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+
+</body>
+</html>

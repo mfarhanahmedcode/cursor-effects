@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dot chain cursor</title>
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #0d0d10;
+    cursor: none;
+  }
+
+  .chain-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-radius: 50%;
+    background: #D4537E;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+  }
+</style>
+</head>
+<body>
+
+<script>
+  const CHAIN_LENGTH = 8;
+  const dots = [];
+  let mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+
+  for (let i = 0; i < CHAIN_LENGTH; i++) {
+    const el = document.createElement('div');
+    el.className = 'chain-dot';
+    const size = 8 - i * 0.5;
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.opacity = 1 - i / CHAIN_LENGTH;
+    document.body.appendChild(el);
+    dots.push({ el, x: mouse.x, y: mouse.y });
+  }
+
+  document.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  function animate() {
+    let targetX = mouse.x;
+    let targetY = mouse.y;
+
+    dots.forEach((dot) => {
+      dot.x += (targetX - dot.x) * 0.35;
+      dot.y += (targetY - dot.y) * 0.35;
+      dot.el.style.left = dot.x + 'px';
+      dot.el.style.top = dot.y + 'px';
+      targetX = dot.x;
+      targetY = dot.y;
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+
+</body>
+</html>

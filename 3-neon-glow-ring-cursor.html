@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Neon glow ring cursor</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #0d0d10;
+      cursor: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    a,
+    button {
+      padding: 12px 28px;
+      border-radius: 999px;
+      border: 1px solid #444;
+      background: transparent;
+      color: #eee;
+      font-family: sans-serif;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: none;
+    }
+
+    #neon-ring {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #1D9E75;
+      box-shadow: 0 0 12px #1D9E75, 0 0 24px 
+                rgba(29, 158, 117, 0.5);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s ease, height 0.2s ease;
+    }
+
+    #neon-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #1D9E75;
+      box-shadow: 0 0 8px #1D9E75;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+
+  <button data-hover>Hover me</button>
+
+  <div id="neon-ring"></div>
+  <div id="neon-dot"></div>
+
+  <script>
+    const ring = document.getElementById('neon-ring');
+    const dot = document.getElementById('neon-dot');
+    let mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+    let ringPos = { x: mouse.x, y: mouse.y };
+    let hovering = false;
+
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      dot.style.left = mouse.x + 'px';
+      dot.style.top = mouse.y + 'px';
+    });
+
+    document.querySelectorAll('[data-hover]').forEach((el) => {
+      el.addEventListener('mouseenter', () => hovering = true);
+      el.addEventListener('mouseleave', () => hovering = false);
+    });
+
+    function animate() {
+      ringPos.x += (mouse.x - ringPos.x) * 0.15;
+      ringPos.y += (mouse.y - ringPos.y) * 0.15;
+      ring.style.left = ringPos.x + 'px';
+      ring.style.top = ringPos.y + 'px';
+
+      const size = hovering ? 64 : 40;
+      ring.style.width = size + 'px';
+      ring.style.height = size + 'px';
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+
+</body>
+
+</html>
